@@ -1,0 +1,29 @@
+{
+    "name": "webmachine/jqgrid",
+    "description": "Jqgrid for Laravel 5",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["jqgrid", "laravel"],
+    "authors": [
+        {
+            "name": "WebMachine",
+            "email": "contacto@webmachine.cl"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.0",
+        "illuminate/config": "~5.0",
+        "illuminate/support": "~5.0",
+        "webmachine/custom-fields": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webmachine\\Jqgrid\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Webmachine\\Jqgrid\\": "tests"
+        }
+    }  
+}
