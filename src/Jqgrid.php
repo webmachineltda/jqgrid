@@ -94,9 +94,10 @@ class Jqgrid {
      * Obtiene datos de modelo en formato json apto para grilla jqgrid
      * 
      * @access public
+     * @param bool $query_debug
      * @return string datos en formato json para grilla
      */    
-    public function datagrid() {
+    public function datagrid($query_debug = FALSE) {
         $page = request('page'); // la página requerida
         $limit = request('rows'); // cuantas filas queremos tener en la grilla
         $sidx = request('sidx'); // obtener la fila indice, es decir la que el usuario clickeó para ordenar
@@ -133,7 +134,8 @@ class Jqgrid {
         if ($page > $total_pages)
             $page = $total_pages;
         $start = $limit * $page - $limit; // no poner $limit*($page - 1)
-                
+        
+        if($query_debug) DB::enableQueryLog();
         $result = $this->query->orderBy($sidx, $sord)->skip($start)->take($limit)->get();
 
         $response['page'] = $page;
@@ -141,7 +143,7 @@ class Jqgrid {
         $response['records'] = $count;
         $response['rows'] = $this->set_response_rows($result);
 
-        return response()->json($response);
+        return $query_debug? response()->json(DB::getQueryLog()) : response()->json($response);
     }
 
     /**
