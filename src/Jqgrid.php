@@ -2,6 +2,7 @@
 namespace Webmachine\Jqgrid;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Webmachine\CustomFields\CustomFieldsFacade as CustomFields;
 
 /**
@@ -68,6 +69,14 @@ class Jqgrid {
      * @acces private 
      */
     private $use_relations;
+    
+    /**
+     * With_trash
+     * 
+     * @var boolean
+     * @acces private 
+     */
+    private $with_trash;    
 
     /**
      * Inicializa
@@ -76,17 +85,20 @@ class Jqgrid {
      * @param array $colmodel
      * @param callable $format
      * @param boolean $use_relations
+     * @param boolean $with_trash
      * @access public
      * @return void
      */
-    public function init($table, $colmodel, $format = FALSE, $use_relations = TRUE) {
+    public function init($table, $colmodel, $format = FALSE, $use_relations = TRUE, $with_trash = FALSE) {
         $this->table = $table;
-        $this->query = DB::table($this->table);    
+        $this->query = DB::table($this->table);
         $this->colmodel = $this->set_custom_fields($table, $colmodel);
         $this->columns = $this->get_columns();
         $this->query->select($this->columns);
         $this->format = $format == FALSE? config('jqgrid.default_format') : $format;
         $this->use_relations = $use_relations;
+        $this->with_trash = $with_trash;
+        if(!$this->with_trash && Schema::hasColumn($this->table, 'deleted_at')) $this->query->whereNull($this->table . '.deleted_at');
         $this->set_relation_joins(); // crea joins a partir de relaciones en colmodel
     }
     
