@@ -221,7 +221,7 @@ class Jqgrid {
         $model = new $model_name;
         $relation = $model->$relation_name();
         $table = $relation->getRelated()->getTable();
-        $one = $relation->getQualifiedOtherKeyName();
+        $one = strpos(app()->version(), '5.4') !== FALSE ? $relation->getQualifiedOwnerKeyName() : $relation->getQualifiedOtherKeyName();
         $two = $relation->getQualifiedForeignKey();
         
         $this->query->leftJoin($table, $one, '=', $two);
