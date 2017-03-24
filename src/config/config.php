@@ -18,5 +18,6 @@ return [
         'toolbarfilter' => true,
         'viewrecords' => true
     ],
-    'default_format' => $default_format
+    'default_format' => $default_format,
+    'default_relation_namespace' => 'App'
 ];

@@ -217,7 +217,9 @@ class Jqgrid {
      * @return void
      */
     private function set_relation_join($model_name, $relation_name) {
-        $model_name = "App\\$model_name";
+        if(!str_contains($model_name, "\\")) {
+            $model_name = config('jqgrid.default_relation_namespace') . "\\" . $model_name;
+        }
         $model = new $model_name;
         $relation = $model->$relation_name();
         $table = $relation->getRelated()->getTable();
