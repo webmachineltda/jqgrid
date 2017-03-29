@@ -266,7 +266,7 @@ class Jqgrid {
         foreach ($result as $r) {
             $cell = [];
             foreach ($r as $column => $value) {
-                    $cell[] = call_user_func($this->format, $column, $value);
+                    $cell[] = call_user_func($this->format, $column, $value, $r);
             }
 
             $rows[] = [

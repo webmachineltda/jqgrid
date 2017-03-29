@@ -1,5 +1,5 @@
 <?php
-$default_format = function ($column, $value) {
+$default_format = function ($column, $value, $row) {
     return $value;
 };
 
