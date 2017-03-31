@@ -62,7 +62,7 @@ class FooController extends Controller {
         ],       
         [
             'label' => 'Provider',
-            'name' => 'providers.name',
+            'name' => 'provider.name', // relation.fieldname
             'relation' => 'FooModel.provider' // ModelName.relation (this relation must exist in your model)
         ]
     ];
