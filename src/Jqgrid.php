@@ -223,10 +223,17 @@ class Jqgrid {
         $model = new $model_name;
         $relation = $model->$relation_name();
         $table = $relation->getRelated()->getTable();
-        $one = strpos(app()->version(), '5.4') !== FALSE ? $relation_name . '.' . $relation->getOwnerKey() : $relation_name . '.' . $relation->getOtherKey();
+        $key = strpos(app()->version(), '5.4') !== FALSE ? $relation->getOwnerKey() : $relation->getOtherKey();
+        $one = "$table.$key";
         $two = $relation->getQualifiedForeignKey();
         
-        $this->query->leftJoin("$table AS $relation_name", $one, '=', $two);
+        // relación directa con tabla padre intenta hacer join consigo mismo
+        if($table == $this->table) {
+            $table .= " AS $relation_name";
+            $one = "$relation_name.$key";
+        }
+        
+        $this->query->leftJoin($table, $one, '=', $two);
     }
 
     /**
