@@ -76,7 +76,15 @@ class Jqgrid {
      * @var boolean
      * @acces private 
      */
-    private $with_trash;    
+    private $with_trash;
+    
+    /**
+     * Filter Format
+     * 
+     * @var callable
+     * @acces private 
+     */
+    private $filter_format;     
 
     /**
      * Inicializa
@@ -89,13 +97,14 @@ class Jqgrid {
      * @access public
      * @return void
      */
-    public function init($table, $colmodel, $format = FALSE, $use_relations = TRUE, $with_trash = FALSE) {
+    public function init($table, $colmodel, $format = FALSE, $filter_format = FALSE, $use_relations = TRUE, $with_trash = FALSE) {
         $this->table = $table;
         $this->query = DB::table($this->table);
         $this->colmodel = $this->set_custom_fields($table, $colmodel);
         $this->columns = $this->get_columns();
         $this->query->select($this->columns);
         $this->format = $format == FALSE? config('jqgrid.default_format') : $format;
+        $this->filter_format = $filter_format == FALSE? config('jqgrid.default_filter_format') : $filter_format;
         $this->use_relations = $use_relations;
         $this->with_trash = $with_trash;
         if(!$this->with_trash && Schema::hasColumn($this->table, 'deleted_at')) $this->query->whereNull($this->table . '.deleted_at');
@@ -126,12 +135,13 @@ class Jqgrid {
         //busqueda sin filtros multiples
         if($search == 'true' and empty($filters_rules)) {
             $field = request('searchField');
-            $data = request('searchString');
+            $data = call_user_func($this->filter_format, $field, request('searchString'));
             $op = request('searchOper');            
             $this->set_where_rule($field, $op, $data);
         } else if ($search == 'true' and !empty($filters_rules)) { // Busqueda con filtros multiples
             foreach ($filters_rules as $filter_rule) {
                 extract($filter_rule);
+                $data = call_user_func($this->filter_format, $field, $data);
                 $this->set_where_rule($field, $op, $data);
             }
         }
@@ -381,7 +391,7 @@ class Jqgrid {
      */
     public function js_colmodel($table = FALSE) {
         if ($table === FALSE && !empty($this->js_colmodels)) $table = array_keys($this->js_colmodels)[0]; // si no especifico $table, obtiene la primera.
-        $colmodel = isset($this->js_colmodels[$table])? $this->js_colmodels[$table] : []; 
+        $colmodel = isset($this->js_colmodels[$table])? $this->js_colmodels[$table] : [];
         return json_encode($colmodel);
     }
     

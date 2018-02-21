@@ -3,6 +3,10 @@ $default_format = function ($column, $value, $row) {
     return $value;
 };
 
+$default_filter_format = function ($field, $data) {
+    return $data;
+};
+
 return [
     'scripts' => [
         // add jqgrid scripts
@@ -19,5 +23,6 @@ return [
         'viewrecords' => true
     ],
     'default_format' => $default_format,
+    'default_filter_format' => $default_filter_format,
     'default_relation_namespace' => 'App'
 ];
