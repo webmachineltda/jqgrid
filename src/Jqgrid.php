@@ -261,12 +261,49 @@ class Jqgrid {
     private function set_where_rule($field, $op, $data) {
         $operator = '';
         $value = '';
-        if($op == 'cn') {
-            $operator = 'LIKE';
-            $value = "%$data%";
+        
+        if($op == 'eq') {
+            $operator = '=';
+            $value = $data;
+        } else if($op == 'ne') {
+            $operator = '!=';
+            $value = $data;
+        } else if($op == 'lt') {
+            $operator = '<';
+            $value = $data;
+        } else if($op == 'le') {
+            $operator = '<=';
+            $value = $data;
+        } else if($op == 'gt') {
+            $operator = '>';
+            $value = $data;
+        } else if($op == 'ge') {
+            $operator = '>=';
+            $value = $data;
         } else if($op == 'bw') {
             $operator = 'LIKE';
             $value = "$data%";
+        } else if($op == 'bn') {
+            $operator = 'NOT LIKE';
+            $value = "$data%";
+        } else if($op == 'in') {
+            $operator = 'IN';
+            $value = $data;
+        } else if($op == 'ni') {
+            $operator = 'NOT IN';
+            $value = $data;
+        } else if($op == 'ew') {
+            $operator = 'LIKE';
+            $value = "%$data";
+        } else if($op == 'en') {
+            $operator = 'NOT LIKE';
+            $value = "%$data";
+        } else if($op == 'cn') {
+            $operator = 'LIKE';
+            $value = "%$data%";
+        } else if($op == 'nc') {
+            $operator = 'NOT LIKE';
+            $value = "%$data%";
         }
         $this->query->where($this->get_column_name($field), $operator, $value);
     }
