@@ -304,6 +304,9 @@ class Jqgrid {
         } else if($op == 'nc') {
             $operator = 'NOT LIKE';
             $value = "%$data%";
+        } else if($op == 'btw') {
+            $this->query->whereBetween($this->get_column_name($field), $data);
+            return;
         }
         $this->query->where($this->get_column_name($field), $operator, $value);
     }
