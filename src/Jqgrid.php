@@ -146,7 +146,7 @@ class Jqgrid {
             }
         }
 
-        $count = $this->query->count();
+        $count = $this->query->count($this->table . '.id');
 
         if ($count > 0) {
             $total_pages = ceil($count / $limit);
