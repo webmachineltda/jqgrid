@@ -146,7 +146,8 @@ class Jqgrid {
             }
         }
 
-        $count = $this->query->count($this->table . '.id');
+        $query_string = $this->get_query_str();
+        $count = DB::select("SELECT COUNT(*) AS count FROM($query_string) count;"){0}->count;
 
         if ($count > 0) {
             $total_pages = ceil($count / $limit);
@@ -165,7 +166,29 @@ class Jqgrid {
         $response['records'] = $count;
         $response['rows'] = $this->set_response_rows($result);
 
-        return $query_debug? response()->json(DB::getQueryLog()) : response()->json($response);
+        return $query_debug? $this->get_query_str() : response()->json($response);
+    }
+
+    /**
+     * Captura valor desde búsqueda y lo elimina de request
+     * @param  string $field
+     * @return string valor búsqueda
+     */
+    public function capture_search($field) {
+        $data = '';
+        $filters = json_decode(request('filters', ''), true);
+        $search = request('_search');
+        if ($search == 'true' and !empty($filters['rules'])) {
+            foreach ($filters['rules'] as $key => $filter_rule) {
+                if($filter_rule['field'] == $field) {
+                    $data = $filter_rule['data'];
+                    unset($filters['rules'][$key]);
+                }
+            }
+            request()->merge(['filters' => json_encode($filters)]);     
+            if(empty($filters['rules'])) request()->merge(['_search' => 'false']);
+            return $data;
+        }
     }
 
     /**
@@ -392,7 +415,22 @@ class Jqgrid {
      */
     public function get_query() {
         return $this->query;
-    }    
+    }
+
+    /**
+     * Obtiene query string
+     * 
+     * @access public
+     * @return Illuminate\Database\Query\Builder
+     */
+    public function get_query_str() { 
+        $sql = $this->query->toSql();
+        foreach($this->query->getBindings() as $binding) {
+            $value = is_numeric($binding) ? $binding : "'" . $binding . "'";
+            $sql = preg_replace('/\?/', $value, $sql, 1);
+        }
+        return $sql;        
+    }        
 
     /**
      * Genera colnames en formato json
