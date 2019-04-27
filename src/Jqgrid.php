@@ -147,7 +147,7 @@ class Jqgrid {
         }
 
         $query_string = $this->get_query_str();
-        $count = DB::select("SELECT COUNT(*) AS count FROM($query_string) count;"){0}->count;
+        $count = DB::select("SELECT COUNT(*) AS count FROM($query_string) count;")[0]->count;
 
         if ($count > 0) {
             $total_pages = ceil($count / $limit);
