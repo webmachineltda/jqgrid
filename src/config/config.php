@@ -7,6 +7,14 @@ $default_filter_format = function ($field, $data) {
     return $data;
 };
 
+$default_add_js_colmodel_callback = function ($colmodel, $table) {
+    return $colmodel;
+};
+
+$default_js_colmodel_callback = function ($colmodel, $table) {
+    return json_encode($colmodel);
+};
+
 return [
     'scripts' => [
         // add jqgrid scripts
@@ -24,5 +32,7 @@ return [
     ],
     'default_format' => $default_format,
     'default_filter_format' => $default_filter_format,
+    'default_add_js_colmodel_callback' => $default_add_js_colmodel_callback,
+    'default_js_colmodel_callback' => $default_js_colmodel_callback,
     'default_relation_namespace' => 'App'
 ];

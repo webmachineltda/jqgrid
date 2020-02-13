@@ -34,7 +34,8 @@ class Jqgrid {
     /**
      * Js_colmodels
      * 
-     * @var array 
+     * @var array
+     * @access private
      */
     private $js_colmodels;
     
@@ -66,7 +67,7 @@ class Jqgrid {
      * Use_relations
      * 
      * @var boolean
-     * @acces private 
+     * @access private 
      */
     private $use_relations;
     
@@ -74,7 +75,7 @@ class Jqgrid {
      * With_trash
      * 
      * @var boolean
-     * @acces private 
+     * @access private 
      */
     private $with_trash;
     
@@ -82,9 +83,9 @@ class Jqgrid {
      * Filter Format
      * 
      * @var callable
-     * @acces private 
+     * @access private 
      */
-    private $filter_format;     
+    private $filter_format;
 
     /**
      * Inicializa
@@ -92,6 +93,7 @@ class Jqgrid {
      * @param string $table
      * @param array $colmodel
      * @param callable $format
+     * @param callable $filter_format
      * @param boolean $use_relations
      * @param boolean $with_trash
      * @access public
@@ -335,7 +337,7 @@ class Jqgrid {
     }
         
     /**
-     * Setea las filas de la respuesta a aprtir de los resultados de datos
+     * Setea las filas de la respuesta a partir de los resultados de datos
      * 
      * @param Collection $result los resultados de datos
      * @access private
@@ -451,12 +453,15 @@ class Jqgrid {
      * 
      * @param string $table
      * @param array $colmodel
+     * @param callable $callback
      * @access public
      * @return void
      */
-    public function add_js_colmodel($table, $colmodel) {    
+    public function add_js_colmodel($table, $colmodel, $callback = FALSE) {    
         $colmodel = $this->clean_relations($colmodel);
         $colmodel = $this->set_custom_fields($table, $colmodel, FALSE);
+        if($callback == FALSE) $callback = config('jqgrid.default_add_js_colmodel_callback');
+        $colmodel = call_user_func($callback, $colmodel, $table);
         $this->js_colmodels[$table] = $colmodel;
     }    
     
@@ -464,13 +469,16 @@ class Jqgrid {
      * Convierte colmodel desde array a json
      * 
      * @param $table
+     * @param callable $callback
      * @access public
      * @return string colmodel en formato json
      */
-    public function js_colmodel($table = FALSE) {
+    public function js_colmodel($table = FALSE, $callback = FALSE) {
         if ($table === FALSE && !empty($this->js_colmodels)) $table = array_keys($this->js_colmodels)[0]; // si no especifico $table, obtiene la primera.
         $colmodel = isset($this->js_colmodels[$table])? $this->js_colmodels[$table] : [];
-        return json_encode($colmodel);
+        if($callback == FALSE) $callback = config('jqgrid.default_js_colmodel_callback');
+        $colmodel = call_user_func($callback, $colmodel, $table);
+        return $colmodel;
     }
     
     /**
