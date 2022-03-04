@@ -12,8 +12,8 @@
     ],
     "require": {
         "php": ">=5.5.0",
-        "illuminate/config": "~5.0",
-        "illuminate/support": "~5.0",
+        "illuminate/config": ">=5.4",
+        "illuminate/support": ">=5.4",
         "webmachine/custom-fields": "dev-master"
     },
     "autoload": {

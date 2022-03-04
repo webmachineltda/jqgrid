@@ -258,7 +258,7 @@ class Jqgrid {
         $model = new $model_name;
         $relation = $model->$relation_name();
         $table = $relation->getRelated()->getTable();
-        $key = strpos(app()->version(), '5.4') !== FALSE ? $relation->getOwnerKey() : $relation->getOtherKey();
+        $key = version_compare(app()->version(), '5.8') == -1 ? $relation->getOwnerKey() : $relation->getOwnerKeyName();
         $one = "$table.$key";
         $two = $relation->getQualifiedForeignKey();
         
