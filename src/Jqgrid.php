@@ -260,7 +260,7 @@ class Jqgrid {
         $table = $relation->getRelated()->getTable();
         $key = version_compare(app()->version(), '5.8') == -1 ? $relation->getOwnerKey() : $relation->getOwnerKeyName();
         $one = "$table.$key";
-        $two = $relation->getQualifiedForeignKey();
+        $two = version_compare(app()->version(), '5.8') == -1 ? $relation->getQualifiedForeignKey() : $relation->getQualifiedForeignKeyName();
         
         // relación directa con tabla padre intenta hacer join consigo mismo
         if($table == $this->table) {
