@@ -131,7 +131,7 @@ class Jqgrid {
         
         //filtros para busqueda multiple
         $filters = json_decode(request('filters', ''), true);
-        $filters_rules = $filters['rules'];
+        $filters_rules = isset($filters['rules']) ? $filters['rules'] : [];
         $search = request('_search');
         
         //busqueda sin filtros multiples
